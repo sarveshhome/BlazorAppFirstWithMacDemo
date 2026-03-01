@@ -1,0 +1,138 @@
+@page "/profile"
+@rendermode InteractiveServer
+
+<PageTitle>Profile</PageTitle>
+
+<div class="profile-container">
+    <h2>Profile</h2>
+    
+    <EditForm Model="@profile" OnValidSubmit="@HandleSubmit" FormName="TravellerProfileForm">
+        <DataAnnotationsValidator />
+        
+        <div class="form-section">
+            <h3>Personal Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <InputText @bind-Value="profile.FirstName" class="form-control" placeholder="Enter first name" />
+                    <ValidationMessage For="@(() => profile.FirstName)" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <InputText @bind-Value="profile.LastName" class="form-control" placeholder="Enter last name" />
+                    <ValidationMessage For="@(() => profile.LastName)" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <InputText @bind-Value="profile.Email" type="email" class="form-control" placeholder="Enter email" />
+                <ValidationMessage For="@(() => profile.Email)" />
+            </div>
+            
+            <div class="form-group">
+                <label>Phone</label>
+                <InputText @bind-Value="profile.Phone" class="form-control" placeholder="Enter phone number" />
+                <ValidationMessage For="@(() => profile.Phone)" />
+            </div>
+            
+            <div class="form-group">
+                <label>Address</label>
+                <InputTextArea @bind-Value="profile.Address" class="form-control" rows="3" placeholder="Enter address" />
+                <ValidationMessage For="@(() => profile.Address)" />
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Payment Information</h3>
+            <div class="form-group">
+                <label>Credit Card</label>
+                <InputText @bind-Value="profile.CreditCard" class="form-control" placeholder="**** **** **** ****" maxlength="19" />
+                <ValidationMessage For="@(() => profile.CreditCard)" />
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <InputCheckbox @bind-Value="profile.IsCorporate" />
+                    Corporate Account
+                </label>
+            </div>
+            
+            @if (profile.IsCorporate)
+            {
+                <div class="form-group corporate-section">
+                    <label>Corporate Credit Card</label>
+                    <InputText @bind-Value="profile.CorporateCreditCard" class="form-control" placeholder="**** **** **** ****" maxlength="19" />
+                    <ValidationMessage For="@(() => profile.CorporateCreditCard)" />
+                </div>
+            }
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+            <button type="button" class="btn btn-secondary" @onclick="ResetForm">Reset</button>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-success">@message</div>
+        }
+    </EditForm>
+    
+    @if (showPreview)
+    {
+        <div class="profile-preview">
+            <h3>Profile Preview</h3>
+            <div class="preview-content">
+                <p><strong>Name:</strong> @profile.FirstName @profile.LastName</p>
+                <p><strong>Email:</strong> @profile.Email</p>
+                <p><strong>Phone:</strong> @profile.Phone</p>
+                <p><strong>Address:</strong> @profile.Address</p>
+                <p><strong>Credit Card:</strong> @MaskCard(profile.CreditCard)</p>
+                @if (profile.IsCorporate)
+                {
+                    <p><strong>Corporate Card:</strong> @MaskCard(profile.CorporateCreditCard)</p>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private ProfileModel profile = new();
+    private string message = string.Empty;
+    private bool showPreview = false;
+
+    private void HandleSubmit()
+    {
+        message = "Profile saved successfully!";
+        showPreview = true;
+        StateHasChanged();
+    }
+
+    private void ResetForm()
+    {
+        profile = new ProfileModel();
+        message = string.Empty;
+        showPreview = false;
+    }
+
+    private string MaskCard(string? card)
+    {
+        if (string.IsNullOrEmpty(card) || card.Length < 4)
+            return "****";
+        return "**** **** **** " + card.Substring(card.Length - 4);
+    }
+
+    public class ProfileModel
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string CreditCard { get; set; } = string.Empty;
+        public bool IsCorporate { get; set; }
+        public string CorporateCreditCard { get; set; } = string.Empty;
+    }
+}
