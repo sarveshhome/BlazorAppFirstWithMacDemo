@@ -1,0 +1,42 @@
+# Workflow name displayed in GitHub Actions
+name: CI
+
+# Trigger conditions for this workflow
+on:
+  # Run on push to these branches
+  push:
+    branches: [ main, develop ]
+  # Run on pull requests targeting these branches
+  pull_request:
+    branches: [ main, develop ]
+
+# Define jobs to run
+jobs:
+  # Job name
+  build:
+    # Use Ubuntu latest runner
+    runs-on: ubuntu-latest
+    
+    # Steps to execute in this job
+    steps:
+    # Checkout repository code
+    - uses: actions/checkout@v4
+    
+    # Install .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        # Specify .NET version
+        dotnet-version: '8.0.x'
+    
+    # Restore NuGet packages
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    # Build the project in Release mode
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+    
+    # Run tests with detailed output
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
