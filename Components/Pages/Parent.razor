@@ -1,0 +1,31 @@
+@page "/parent"
+@rendermode InteractiveServer
+
+<PageTitle>Parent Component</PageTitle>
+
+<h3>Parent Component</h3>
+
+<div class="parent-container">
+    <div class="form-group">
+        <label>Enter Message:</label>
+        <input @bind="parentMessage" class="form-control" placeholder="Type a message" />
+    </div>
+    
+    <div class="form-group">
+        <label>Enter Count:</label>
+        <input @bind="count" type="number" class="form-control" />
+    </div>
+    
+    <button @onclick="UpdateData" class="btn btn-primary">Send to Child</button>
+    
+    <hr />
+    
+    <Child Message="@parentMessage" Count="@count" OnChildEvent="HandleChildEvent" />
+    
+    @if (!string.IsNullOrEmpty(childResponse))
+    {
+        <div class="alert alert-info mt-3">
+            <strong>Response from Child:</strong> @childResponse
+        </div>
+    }
+</div>
