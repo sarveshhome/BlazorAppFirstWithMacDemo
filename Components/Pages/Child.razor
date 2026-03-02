@@ -1,0 +1,12 @@
+@rendermode InteractiveServer
+
+<div class="child-container">
+    <h4>Child Component</h4>
+    
+    <div class="child-content">
+        <p><strong>Message from Parent:</strong> @Message</p>
+        <p><strong>Count from Parent:</strong> @Count</p>
+        
+        <button @onclick="SendToParent" class="btn btn-success">Send Response to Parent</button>
+    </div>
+</div>
