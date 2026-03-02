@@ -38,5 +38,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     
     # Run tests with detailed output
-    - name: Test
+    - name: Test 1
       run: dotnet test --no-build --configuration Release --verbosity normal
+
+    
